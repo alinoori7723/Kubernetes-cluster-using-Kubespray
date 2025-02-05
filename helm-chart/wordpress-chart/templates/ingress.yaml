@@ -1,0 +1,54 @@
+{{- /* WordPress Ingress */ -}}
+{{- if .Values.wordpress.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "wordpress-chart.fullname" $ }}-wordpress-ingress
+  # You can optionally add annotations here if needed.
+spec:
+  ingressClassName: "nginx"  # Change if your ingress controller uses a different class name.
+  rules:
+  {{- range .Values.wordpress.ingress.hosts }}
+    - host: {{ .host }}
+      http:
+        paths:
+        {{- range .paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: {{ include "wordpress-chart.fullname" $ }}-wordpress
+                port:
+                  number: {{ $.Values.wordpress.service.port }}
+        {{- end }}
+  {{- end }}
+{{- end }}
+
+{{- /* Separator between resources */ -}}
+---
+{{- /* PhpMyAdmin Ingress */ -}}
+{{- if .Values.phpmyadmin.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "wordpress-chart.fullname" $ }}-phpmyadmin-ingress
+  annotations:
+{{ toYaml .Values.phpmyadmin.ingress.annotations | indent 4 }}
+spec:
+  ingressClassName: "nginx"
+  rules:
+  {{- range .Values.phpmyadmin.ingress.hosts }}
+    - host: {{ .host }}
+      http:
+        paths:
+        {{- range .paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: {{ include "wordpress-chart.fullname" $ }}-phpmyadmin
+                port:
+                  number: {{ $.Values.phpmyadmin.service.port }}
+        {{- end }}
+  {{- end }}
+{{- end }}

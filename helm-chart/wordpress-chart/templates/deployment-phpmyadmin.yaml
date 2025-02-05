@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "wordpress-chart.fullname" . }}-phpmyadmin
+spec:
+  replicas: {{ .Values.phpmyadmin.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "wordpress-chart.name" . }}-phpmyadmin
+  template:
+    metadata:
+      labels:
+        app: {{ include "wordpress-chart.name" . }}-phpmyadmin
+    spec:
+      containers:
+        - name: phpmyadmin
+          image: "{{ .Values.phpmyadmin.image.repository }}:{{ .Values.phpmyadmin.image.tag }}"
+          imagePullPolicy: {{ .Values.phpmyadmin.image.pullPolicy }}
+          env:
+            - name: PMA_HOST
+              value: "{{ include "wordpress-chart.fullname" . }}-mysql"
+          ports:
+            - containerPort: 80
+
