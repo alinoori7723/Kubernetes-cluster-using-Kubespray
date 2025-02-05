@@ -1,0 +1,51 @@
+# WordPress configuration
+wordpress:
+  replicaCount: 1
+  image:
+    repository: wordpress
+    tag: 5.8.0-apache
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 80
+  ingress:
+    enabled: true
+    hosts:
+      - host: "alinoori.maxtld.dev"
+        paths:
+          - path: /wordpress
+            pathType: Prefix
+
+# MySQL configuration
+mysql:
+  replicaCount: 1
+  image:
+    repository: mysql
+    tag: 5.7
+    pullPolicy: IfNotPresent
+  rootPassword: "rootpassword"        # change this or use secrets
+  database: "wordpress"
+  user: "wpuser"
+  password: "wppassword"               # change this or use secrets
+  service:
+    type: ClusterIP
+    port: 3306
+
+# PhpMyAdmin configuration
+phpmyadmin:
+  replicaCount: 1
+  image:
+    repository: phpmyadmin/phpmyadmin
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 80
+  ingress:
+    enabled: true
+    hosts:
+      - host: "alinoori.maxtld.dev"
+        paths:
+          - path: /dbadmin
+            pathType: Prefix
+
