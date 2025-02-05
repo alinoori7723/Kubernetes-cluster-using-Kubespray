@@ -1,7 +1,6 @@
 #!/bin/bash
 set -e
 
-# A simple logging function.
 log() {
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
 }
@@ -24,14 +23,11 @@ log "Installing Kubespray dependencies..."
 sudo pip3 install -r requirements.txt
 
 log "Setting up inventory for a single-node cluster..."
-# Copy the sample inventory to a new folder.
 cp -rfp inventory/sample inventory/mycluster
 
-# Get the current machine IP (first IP from hostname -I)
 MY_IP=$(hostname -I | awk '{print $1}')
 echo "Using IP: $MY_IP"
 
-# Create a minimal inventory (hosts.ini) for a single node.
 cat > inventory/mycluster/hosts.ini <<EOF
 [all]
 $MY_IP ansible_user=$USER
@@ -61,9 +57,7 @@ if ! command -v helm >/dev/null 2>&1; then
 fi
 
 log "Deploying WordPress Helm Chart..."
-# Assumes your chart is located in helm-chart/wordpress-chart
 helm upgrade --install wordpress-release helm-chart/wordpress-chart --namespace default
-
 log "Bootstrap completed."
 echo "Access WordPress at: https://candidate-name.maxtld.dev/wordpress"
 echo "Access PhpMyAdmin at: https://candidate-name.maxtld.dev/dbadmin"
