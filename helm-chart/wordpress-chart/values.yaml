@@ -1,4 +1,3 @@
-# WordPress configuration
 wordpress:
   replicaCount: 1
   image:
@@ -16,22 +15,20 @@ wordpress:
           - path: /wordpress
             pathType: Prefix
 
-# MySQL configuration
 mysql:
   replicaCount: 1
   image:
     repository: mysql
     tag: 5.7
     pullPolicy: IfNotPresent
-  rootPassword: "rootpassword"        # change this or use secrets
+  rootPassword: "rootpassword"
   database: "wordpress"
   user: "wpuser"
-  password: "wppassword"               # change this or use secrets
+  password: "wppassword"
   service:
     type: ClusterIP
     port: 3306
 
-# PhpMyAdmin configuration
 phpmyadmin:
   replicaCount: 1
   image:
